@@ -1,9 +1,4 @@
-'''
-Password Strength Checker
 
-Created by *Abdullah EL-Yamany*
--------------------------------
-'''
 
 
 import string
