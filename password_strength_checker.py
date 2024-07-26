@@ -1,86 +1,58 @@
+import re
 
+def password_strength_checker(password):
+    length_criteria = len(password) >= 8
+    uppercase_criteria = re.search(r'[A-Z]', password) is not None
+    lowercase_criteria = re.search(r'[a-z]', password) is not None
+    digit_criteria = re.search(r'[0-9]', password) is not None
+    special_criteria = re.search(r'[@$!%*?&]', password) is not None
+    uniqueness_criteria = len(set(password)) / len(password) > 0.7 if len(password) > 0 else False
+    
+    strength = 0
+    feedback = []
 
+    if length_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should be at least 8 characters long.")
+    
+    if uppercase_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one uppercase letter.")
+    
+    if lowercase_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one lowercase letter.")
+    
+    if digit_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one digit.")
+    
+    if special_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should include at least one special character (@$!%*?&).")
+    
+    if uniqueness_criteria:
+        strength += 1
+    else:
+        feedback.append("Password should have a higher ratio of unique characters.")
 
-import string
-import getpass
+    if strength == 6:
+        feedback.append("Your password is strong.")
+    elif strength >= 4:
+        feedback.append("Your password is good, but can be improved.")
+    else:
+        feedback.append("Your password is weak.")
 
+    return strength, feedback
 
-def check_password_strength():
-   password = getpass.getpass('Enter the password: ')
-   strength = 0
-   remarks = ''
-   lower_count = upper_count = num_count = wspace_count = special_count = 0
-
-   for char in list(password):
-       if char in string.ascii_lowercase:
-           lower_count += 1
-       elif char in string.ascii_uppercase:
-           upper_count += 1
-       elif char in string.digits:
-           num_count += 1
-       elif char == ' ':
-           wspace_count += 1
-       else:
-           special_count += 1
-
-   if lower_count >= 1:
-       strength += 1
-   if upper_count >= 1:
-       strength += 1
-   if num_count >= 1:
-       strength += 1
-   if wspace_count >= 1:
-       strength += 1
-   if special_count >= 1:
-       strength += 1
-
-   if strength == 1:
-       remarks = ('That\'s a very bad password.'
-           ' Change it as soon as possible.')
-   elif strength == 2:
-       remarks = ('That\'s a weak password.'
-           ' You should consider using a tougher password.')
-   elif strength == 3:
-       remarks = 'Your password is okay, but it can be improved.'
-   elif strength == 4:
-       remarks = ('Your password is hard to guess.'
-           ' But you could make it even more secure.')
-   elif strength == 5:
-       remarks = ('Now that\'s one hell of a strong password!!!'
-           ' Hackers don\'t have a chance guessing that password!')
-
-   print('Your password has:-')
-   print(f'{lower_count} lowercase letters')
-   print(f'{upper_count} uppercase letters')
-   print(f'{num_count} digits')
-   print(f'{wspace_count} whitespaces')
-   print(f'{special_count} special characters')
-   print(f'Password Score: {strength / 5}')
-   print(f'Remarks: {remarks}')
-
-
-def check_pwd(another_pw=False):
-   valid = False
-   if another_pw:
-       choice = input(
-           'Do you want to check another password\'s strength (y/n) : ')
-   else:
-       choice = input(
-           'Do you want to check your password\'s strength (y/n) : ')
-
-   while not valid:
-       if choice.lower() == 'y':
-           return True
-       elif choice.lower() == 'n':
-           print('Exiting...')
-           return False
-       else:
-           print('Invalid input...please try again. \n')
-
-
-if __name__ == '__main__':
-   print('===== Welcome to Password Strength Checker =====')
-   check_pw = check_pwd()
-   while check_pw:
-       check_password_strength()
-       check_pw = check_pwd(True)
+# Example usage
+password = "Passw0rd!"
+strength, feedback = password_strength_checker(password)
+print(f"Password Strength: {strength}/6")
+for line in feedback:
+    print(line)
